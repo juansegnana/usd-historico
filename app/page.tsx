@@ -147,7 +147,7 @@ export default function ExchangeRateApp() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
                 type="text"
-                placeholder="Enter date (e.g., 'yesterday', 'hace una semana')"
+                placeholder="Enter date (e.g., 'yesterday', 'last week')"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/60 text-center backdrop-blur-sm h-12 text-lg"
