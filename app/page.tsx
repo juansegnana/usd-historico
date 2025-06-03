@@ -5,6 +5,13 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select"
 import * as chrono from "chrono-node"
 
 export default function ExchangeRateApp() {
@@ -13,6 +20,8 @@ export default function ExchangeRateApp() {
   const [exchangeRate, setExchangeRate] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+  const [amount, setAmount] = useState("")
+  const [inputCurrency, setInputCurrency] = useState<"ARS" | "USD">("ARS")
 
   useEffect(() => {
     const today = new Date()
@@ -116,6 +125,12 @@ export default function ExchangeRateApp() {
     }
   }
 
+  const convertedAmount = amount && exchangeRate
+    ? inputCurrency === "ARS"
+      ? parseFloat(amount) / exchangeRate
+      : parseFloat(amount) * exchangeRate
+    : null
+
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat relative"
@@ -157,6 +172,34 @@ export default function ExchangeRateApp() {
             {error && (
               <div className="text-red-300 text-sm text-center bg-red-500/20 p-3 rounded-lg backdrop-blur-sm">
                 {error}
+              </div>
+            )}
+
+            {exchangeRate && (
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <Input
+                    type="number"
+                    placeholder={`Amount in ${inputCurrency}`}
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/60 text-center backdrop-blur-sm h-12 text-lg"
+                  />
+                  <Select value={inputCurrency} onValueChange={(v) => setInputCurrency(v as "ARS" | "USD") }>
+                    <SelectTrigger className="w-24 bg-white/10 border-white/20 text-white backdrop-blur-sm">
+                      <SelectValue aria-label={inputCurrency}>{inputCurrency}</SelectValue>
+                    </SelectTrigger>
+                    <SelectContent className="bg-white/10 text-white backdrop-blur-sm">
+                      <SelectItem value="ARS">ARS</SelectItem>
+                      <SelectItem value="USD">USD</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {convertedAmount !== null && (
+                  <div className="text-white text-sm">
+                    {formatExchangeRate(convertedAmount)} {inputCurrency === 'ARS' ? 'USD' : 'ARS'}
+                  </div>
+                )}
               </div>
             )}
 
